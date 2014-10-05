@@ -12,49 +12,25 @@ public class IsamIndexNode extends IsamNode {
 		return keys[pos];
 	}
 
-	@Override
-	public String search(Integer key) {
-
-		Integer index = 0;
-
-		while (index <= getSize()-1) {
-			if (keys[index] == null) {
-				break;
-			}
-			if (key < keys[index]) {
-				break;
-			}
-			index++;
-		}
-
-		return children[index].search(key);
-	}
-
-	@Override
-	public boolean insert(Integer key, String value) {
-
-		Integer index = 0;
-
+	private IsamNode getChildForKey(Integer key){
+		int index = 0;
 		while (index < getSize()) {
 			if (keys[index] == null || key < keys[index]) {
 				break;
 			}
-			
 			index++;
 		}
-
-		return children[index].insert(key, value);
-
+		return children[index];
+	}
+	
+	@Override
+	public String search(Integer key) {
+		return getChildForKey(key).search(key);
 	}
 
-	/**
-	 * Create a child at a specific position and give the height of the subtree
-	 * Only for internal use
-	 */
-	protected void createChild(int i, int height) {
-		/*
-		 * TODO: create the correct type of child depending on height and position
-		 */
+	@Override
+	public boolean insert(Integer key, String value) {
+		return getChildForKey(key).insert(key, value);
 	}
 
 	/**
@@ -106,19 +82,6 @@ public class IsamIndexNode extends IsamNode {
 
 	@Override
 	public boolean delete(Integer key) {
-
-		Integer index = 0;
-
-		while (index <= getSize()-1) {
-			if (keys[index] == null) {
-				break;
-			}
-			if (keys[index] < key) {
-				break;
-			}
-			index++;
-		}
-
-		return children[index].delete(key); 
+		return getChildForKey(key).delete(key); 
 	}
 }
