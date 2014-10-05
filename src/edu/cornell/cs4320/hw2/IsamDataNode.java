@@ -15,7 +15,7 @@ public class IsamDataNode extends IsamNode {
 
 		Integer index = 0;
 
-		while (index <= getSize()-1) {
+		while (index < getSize()) {
 			if (keys[index] == key) {
 				return values[index];
 			}
@@ -41,7 +41,7 @@ public class IsamDataNode extends IsamNode {
 
 		Integer index = 0;
 
-		while (index <= getSize()-1) {
+		while (index < getSize()) {
 			if (keys[index] == key) {
 				return false;
 			}
