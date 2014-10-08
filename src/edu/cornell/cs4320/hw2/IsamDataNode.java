@@ -12,20 +12,15 @@ public class IsamDataNode extends IsamNode {
 
 	@Override
 	public String search(Integer key) {
-
-		Integer index = 0;
-
-		while (index < getSize()) {
-			if (keys[index] == key) {
-				return values[index];
-			}
-			index++;
+		for (int key_index = 0; key_index < getSize(); key_index++) {
+			if (keys[key_index] != null && keys[key_index].intValue() == key.intValue())
+				return values[key_index];
 		}
-		if (hasOverflow()) {
+		
+		if (hasOverflow())
 			return getOverflowPage().search(key);
-		}
-
-		return null;
+		else
+			return null;
 	}
 
 	public boolean hasOverflow() {
@@ -36,30 +31,32 @@ public class IsamDataNode extends IsamNode {
 		return successor;
 	}
 
-	@Override
-	public boolean insert(Integer key, String value) {
-
-		Integer index = 0;
-
-		while (index < getSize()) {
-			if (keys[index] == key) {
-				return false;
+	
+	private void doInsert(Integer key, String value){
+		for(int key_index = 0; key_index < getSize(); key_index++){
+			if (keys[key_index] == null){
+				keys[key_index] = key;
+				values[key_index] = value;
+				return;
 			}
-			else if (keys[index] == null){
-				keys[index] = key;
-				values[index] = value;
-				return true;
-			}
-			index++;
 		}
 
 		if (hasOverflow()) {
-			return getOverflowPage().insert(key, value);
+			getOverflowPage().doInsert(key, value);
 		}
-
-		successor = new IsamDataNode(getSize());
-
-		return successor.insert(key, value);
+		else{
+			successor = new IsamDataNode(getSize());
+			successor.doInsert(key, value);
+		}
+	}
+	
+	@Override	
+	public boolean insert(Integer key, String value) {
+		if(search(key) != null)
+			return false;
+		
+		doInsert(key, value);
+		return true;
 	}
 
 	@Override
